@@ -325,7 +325,7 @@ _NO_TRACE static inline void invlpg(uintptr_t addr)
 {
 	asm volatile (
 	    "invlpg %[addr]\n"
-	    :: [addr] "m" (*((sysarg_t *) addr))
+	    :: [addr] "m" (*((sysarg_t *) addr)) : "memory"
 	);
 }
 
