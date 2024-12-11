@@ -398,11 +398,19 @@ _NO_TRACE static inline void tr_load(uint16_t sel)
 		); \
 	}
 
+#define GEN_WRITE_REG_MEM_CLOBBER(reg) _NO_TRACE static inline void write_ ##reg (sysarg_t regn) \
+	{ \
+		asm volatile ( \
+			"movq %[regn], %%" #reg \
+			:: [regn] "r" (regn) : "memory"\
+		); \
+	}
+
 GEN_READ_REG(cr0);
 GEN_WRITE_REG(cr0);
 GEN_READ_REG(cr2);
 GEN_READ_REG(cr3);
-GEN_WRITE_REG(cr3);
+GEN_WRITE_REG_MEM_CLOBBER(cr3);
 GEN_READ_REG(cr4);
 GEN_WRITE_REG(cr4);
 
