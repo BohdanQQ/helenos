@@ -35,6 +35,10 @@
 #ifndef KERN_amd64_TLB_H_
 #define KERN_amd64_TLB_H_
 
+#if defined(CONFIG_ASID) && defined(CONFIG_ASID_FIFO)
+extern void pcid_set_no_invalidate(asid_t pcid);
+#endif
+
 #endif
 
 /** @}

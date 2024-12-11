@@ -61,6 +61,14 @@
 SPINLOCK_EXTERN(asidlock);
 extern link_t as_with_asid_head;
 
+#ifndef asid_force_fallback
+#define asid_force_fallback() (false)
+#endif
+
+#ifndef ASID_FALLBACK_NO_SIDE_EFFECT
+#define ASID_FALLBACK_NO_SIDE_EFFECT (ASID_START + 1)
+#endif
+
 #ifndef asid_get
 extern asid_t asid_get(void);
 #endif /* !def asid_get */

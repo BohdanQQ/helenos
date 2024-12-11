@@ -73,6 +73,12 @@ static size_t asids_allocated = 0;
  */
 asid_t asid_get(void)
 {
+	/* possibly-runtime check whether ASID is enabled on the hardware level */
+	if (asid_force_fallback()) {
+		/* if not, fall back to the default ASID and leave all ASID-related DS be */
+		return ASID_FALLBACK_NO_SIDE_EFFECT;
+	}
+
 	asid_t asid;
 	link_t *tmp;
 	as_t *as;
@@ -158,6 +164,12 @@ asid_t asid_get(void)
  */
 void asid_put(asid_t asid)
 {
+	/* possibly-runtime check whether ASID is enabled on the hardware level */
+	if (asid_force_fallback()) {
+		/* if not, do not do anything, ASIDs are not supported */
+		return;
+	}
+
 	asids_allocated--;
 	asid_put_arch(asid);
 }

@@ -329,6 +329,30 @@ _NO_TRACE static inline void invlpg(uintptr_t addr)
 	);
 }
 
+enum {
+	INVPCID_TYPE_SINGLE_ADDR = 0,
+	INVPCID_TYPE_SINGLE_PCID = 1,
+	INVPCID_TYPE_EVERYTHING = 2,
+	INVPCID_TYPE_ALL_NON_GLOBAL = 3,
+};
+
+/** Invalidate TLB entries given a descriptor with a pcid.
+ * invalidates all mappingsâ€”except global translationsâ€”associated with the PCID specified in the INVPCID descriptor.
+ * @param pcid PCID to invalidate - zero for INVPCID_TYPE_EVERYTHING, INVPCID_TYPE_ALL_NON_GLOBAL
+ * @param addr Virtual address to invalidate - zero for all except INVPCID_TYPE_SINGLE_ADDR
+ * @param type instruction operating mode, for exact details consult amd64 manual
+ */
+_NO_TRACE static inline void invpcid(uint64_t pcid, uint64_t addr, uint64_t type)
+{
+	struct {
+		uint64_t desc_pcid;
+		uint64_t desc_addr;
+	} __attribute__((packed)) desc = { pcid, addr };
+
+	asm volatile ("invpcid %[desc], %[type]\n"
+	    :: [desc] "m" (desc), [type] "r" (type) : "memory");
+}
+
 /** Load GDTR register from memory.
  *
  * @param gdtr_reg Address of memory from where to load GDTR.

@@ -41,6 +41,7 @@
 
 #define INTEL_CPUID_LEVEL     0x00000000
 #define INTEL_CPUID_STANDARD  0x00000001
+#define INTEL_CPUID_FEATURES  0x00000007
 #define INTEL_CPUID_EXTENDED  0x80000000
 #define INTEL_SSE2            26
 #define INTEL_FXSAVE          24
@@ -59,6 +60,8 @@ typedef struct {
 extern int has_cpuid(void);
 
 extern void cpuid(uint32_t cmd, cpu_info_t *info);
+
+extern void cpuid_ext_flags(uint32_t cmd, cpu_info_t *info);
 
 #endif /* !def __ASSEMBLER__ */
 #endif

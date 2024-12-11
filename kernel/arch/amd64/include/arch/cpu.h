@@ -58,6 +58,7 @@
 
 #define CR4_PAE		(1 << 5)
 #define CR4_OSFXSR	(1 << 9)
+#define CR4_PCIDE (1 << 17)
 
 /* EFER bits */
 #define AMD_SCE		(1 << 0)

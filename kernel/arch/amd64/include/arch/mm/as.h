@@ -50,8 +50,11 @@
 #define as_destructor_arch(as)          ((void)as, 0)
 #define as_create_arch(as, flags)       ((void)as, (void)flags, EOK)
 
+#if !defined(CONFIG_ASID) || !defined(CONFIG_ASID_FIFO)
 #define as_install_arch(as)
 #define as_deinstall_arch(as)
+#endif
+
 #define as_invalidate_translation_cache(as, page, cnt)
 
 typedef struct {

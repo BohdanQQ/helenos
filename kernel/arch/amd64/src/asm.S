@@ -127,6 +127,25 @@ FUNCTION_BEGIN(cpuid)
 	ret
 FUNCTION_END(cpuid)
 
+FUNCTION_BEGIN(cpuid_ext_flags)
+	/* Preserve %rbx across function calls */
+	movq %rbx, %r10
+
+	/* Load the command into %eax */
+	movl %edi, %eax
+  /* Load the sub = 0 into %ecx */
+	movl $0, %ecx
+
+	cpuid
+	movl %eax, 0(%rsi)
+	movl %ebx, 4(%rsi)
+	movl %ecx, 8(%rsi)
+	movl %edx, 12(%rsi)
+
+	movq %r10, %rbx
+	ret
+FUNCTION_END(cpuid_ext_flags)
+
 /** Enable local APIC
  *
  * Enable local APIC in MSR.

@@ -30,7 +30,7 @@
  * @{
  */
 /** @file
- * @ingroup kernel_ia32_mm, kernel_amd64_mm
+ * @ingroup kernel_ia32_mm
  */
 
 #include <arch/mm/as.h>
