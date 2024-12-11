@@ -1086,7 +1086,7 @@ sys_errno_t sys_thread_join(thread_id_t thread_id)
 
 	/* interruptible operation ensures more swift termination of the joining thread  */
 	errno_t rc = thread_join_timeout(thread_to_join, SYNCH_NO_TIMEOUT, SYNCH_FLAGS_INTERRUPTIBLE);
-  /* thread_join_timeout 'puts' the thread ref if successful */
+	/* thread_join_timeout 'puts' the thread ref if successful */
 	if (rc != EOK) {
 		thread_put(thread_to_join);
 	}
