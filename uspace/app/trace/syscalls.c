@@ -46,6 +46,7 @@ const sc_desc_t syscall_desc[] = {
 	[SYS_THREAD_GET_ID] = { "thread_get_id", 1, V_ERRNO },
 	[SYS_THREAD_USLEEP] = { "thread_usleep", 1, V_ERRNO },
 	[SYS_THREAD_UDELAY] = { "thread_udelay", 1, V_ERRNO },
+	[SYS_THREAD_JOIN] = { "thread_join", 1, V_ERRNO },
 
 	[SYS_TASK_GET_ID] = { "task_get_id", 1, V_ERRNO },
 	[SYS_TASK_SET_NAME] = { "task_set_name", 2, V_ERRNO },

@@ -1060,5 +1060,39 @@ sys_errno_t sys_thread_udelay(uint32_t usec)
 	return 0;
 }
 
+/** Join thread.
+ *
+ * @param thread_id ID of the thread to join.
+ *
+ * @return EINVAL, when joining the current thread.
+ * @return ENOENT, no thread to be joined.
+ * @return EOK, successfully joined the specified thread.
+ *
+ */
+sys_errno_t sys_thread_join(thread_id_t thread_id)
+{
+	irq_spinlock_lock(&threads_lock, true);
+	thread_t *thread_to_join = thread_find_by_id(thread_id);
+	if (thread_to_join == NULL) {
+		irq_spinlock_unlock(&threads_lock, true);
+		return (sys_errno_t) ENOENT;
+	}
+	thread_to_join = thread_try_ref(thread_to_join);
+	irq_spinlock_unlock(&threads_lock, true);
+
+	if (thread_to_join == NULL) {
+		return (sys_errno_t) ENOENT;
+	}
+
+	/* interruptible operation ensures more swift termination of the joining thread  */
+	errno_t rc = thread_join_timeout(thread_to_join, SYNCH_NO_TIMEOUT, SYNCH_FLAGS_INTERRUPTIBLE);
+  /* thread_join_timeout 'puts' the thread ref if successful */
+	if (rc != EOK) {
+		thread_put(thread_to_join);
+	}
+
+	return (sys_errno_t) rc;
+}
+
 /** @}
  */

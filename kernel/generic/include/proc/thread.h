@@ -304,6 +304,7 @@ extern sys_errno_t sys_thread_exit(int);
 extern sys_errno_t sys_thread_get_id(uspace_ptr_thread_id_t);
 extern sys_errno_t sys_thread_usleep(uint32_t);
 extern sys_errno_t sys_thread_udelay(uint32_t);
+extern sys_errno_t sys_thread_join(thread_id_t);
 
 #endif
 

@@ -196,5 +196,19 @@ void thread_sleep(sec_t sec)
 	}
 }
 
+/** Join thread.
+ *
+ * @param thread_id ID of the thread to join.
+ *
+ * @return EINVAL, when joining the current thread.
+ * @return ENOENT, no thread to be joined.
+ * @return EOK, successfully joined the specified thread.
+ *
+ */
+errno_t thread_join(thread_id_t thread_id)
+{
+	return (errno_t) __SYSCALL1(SYS_THREAD_JOIN, (sysarg_t) thread_id);
+}
+
 /** @}
  */

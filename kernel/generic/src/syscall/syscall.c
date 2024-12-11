@@ -65,6 +65,7 @@ static syshandler_t syscall_table[] = {
 	[SYS_THREAD_GET_ID] = (syshandler_t) sys_thread_get_id,
 	[SYS_THREAD_USLEEP] = (syshandler_t) sys_thread_usleep,
 	[SYS_THREAD_UDELAY] = (syshandler_t) sys_thread_udelay,
+	[SYS_THREAD_JOIN] = (syshandler_t) sys_thread_join,
 
 	[SYS_TASK_GET_ID] = (syshandler_t) sys_task_get_id,
 	[SYS_TASK_SET_NAME] = (syshandler_t) sys_task_set_name,

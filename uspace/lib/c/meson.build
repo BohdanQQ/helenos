@@ -193,6 +193,7 @@ test_src = files(
 	'test/str.c',
 	'test/string.c',
 	'test/strtol.c',
+  'test/thread.c',
 	'test/uuid.c',
 )
 

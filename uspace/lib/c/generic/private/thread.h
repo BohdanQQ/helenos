@@ -50,6 +50,7 @@ extern void thread_detach(thread_id_t);
 extern thread_id_t thread_get_id(void);
 extern void thread_usleep(usec_t);
 extern void thread_sleep(sec_t);
+extern errno_t thread_join(thread_id_t);
 
 #endif
 
