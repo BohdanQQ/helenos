@@ -26,62 +26,27 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/** @addtogroup nav
+/** @addtogroup pci-ide
  * @{
  */
-/**
- * @file Navigator panel types
+/** @file ISA IDE hardware protocol
  */
 
-#ifndef TYPES_PANEL_H
-#define TYPES_PANEL_H
+#ifndef ISA_IDE_HW_H
+#define ISA_IDE_HW_H
 
-#include <gfx/color.h>
-#include <gfx/coord.h>
-#include <ui/filelist.h>
-#include <ui/window.h>
-#include <stdint.h>
-
-/** Navigator panel
- *
- * This is a custom UI control.
+/*
+ * PCI IDE needs to use ATA ports at fixed legacy ISA addresses.
+ * We need to know what those addresses are so that, if we are
+ * asked to attach to those *and* we know that PCI IDE is attached
+ * to legacy IDE ranges, we should not attach.
  */
-typedef struct panel {
-	/** Base control object */
-	struct ui_control *control;
-
-	/** Containing window */
-	ui_window_t *window;
-
-	/** Callbacks */
-	struct panel_cb *cb;
-
-	/** Callback argument */
-	void *cb_arg;
-
-	/** Panel rectangle */
-	gfx_rect_t rect;
-
-	/** Panel color */
-	gfx_color_t *color;
-
-	/** Active border color */
-	gfx_color_t *act_border_color;
-
-	/** @c true iff the panel is active */
-	bool active;
-
-	/** File list */
-	ui_file_list_t *flist;
-} panel_t;
-
-/** Panel callbacks */
-typedef struct panel_cb {
-	/** Request panel activation */
-	void (*activate_req)(void *, panel_t *);
-	/** Open file */
-	void (*file_open)(void *, panel_t *, const char *);
-} panel_cb_t;
+enum {
+	leg_ide_ata_cmd_p = 0x01f0,
+	leg_ide_ata_ctl_p = 0x03f4,
+	leg_ide_ata_cmd_s = 0x0170,
+	leg_ide_ata_ctl_s = 0x0374
+};
 
 #endif
 

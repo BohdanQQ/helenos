@@ -26,64 +26,55 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/** @addtogroup nav
- * @{
- */
-/**
- * @file Navigator panel types
- */
+#include <errno.h>
+#include <fibril.h>
+#include <fibril_synch.h>
+//#include <stdio.h>
+//#include <stddef.h>
+#include "../tester.h"
 
-#ifndef TYPES_PANEL_H
-#define TYPES_PANEL_H
+static fibril_mutex_t fm1, fm2;
 
-#include <gfx/color.h>
-#include <gfx/coord.h>
-#include <ui/filelist.h>
-#include <ui/window.h>
-#include <stdint.h>
+static errno_t fibril_fn(void *data)
+{
+	TPRINTF("F2: Lock M2\n");
+	fibril_mutex_lock(&fm2);
+	fibril_sleep(1);
+	TPRINTF("F2: Lock M1\n");
+	fibril_mutex_lock(&fm1);
+	TPRINTF("F2: Unlock M1, M2\n");
+	fibril_mutex_unlock(&fm1);
+	fibril_mutex_unlock(&fm2);
+	return EOK;
+}
 
-/** Navigator panel
- *
- * This is a custom UI control.
- */
-typedef struct panel {
-	/** Base control object */
-	struct ui_control *control;
+const char *test_deadlock(void)
+{
+	fid_t fid;
 
-	/** Containing window */
-	ui_window_t *window;
+	fibril_mutex_initialize(&fm1);
+	fibril_mutex_initialize(&fm2);
 
-	/** Callbacks */
-	struct panel_cb *cb;
+	TPRINTF("Creating fibril\n");
+	fid = fibril_create(fibril_fn, NULL);
+	if (fid == 0) {
+		TPRINTF("\nCould not create fibril.\n");
+		goto error;
+	}
 
-	/** Callback argument */
-	void *cb_arg;
+	fibril_add_ready(fid);
 
-	/** Panel rectangle */
-	gfx_rect_t rect;
+	TPRINTF("F1: Lock M1\n");
+	fibril_mutex_lock(&fm1);
+	fibril_sleep(1);
+	TPRINTF("F1: Lock M2\n");
+	fibril_mutex_lock(&fm2);
 
-	/** Panel color */
-	gfx_color_t *color;
+	TPRINTF("F1: Unlock M2, M1\n");
+	fibril_mutex_unlock(&fm2);
+	fibril_mutex_unlock(&fm1);
 
-	/** Active border color */
-	gfx_color_t *act_border_color;
-
-	/** @c true iff the panel is active */
-	bool active;
-
-	/** File list */
-	ui_file_list_t *flist;
-} panel_t;
-
-/** Panel callbacks */
-typedef struct panel_cb {
-	/** Request panel activation */
-	void (*activate_req)(void *, panel_t *);
-	/** Open file */
-	void (*file_open)(void *, panel_t *, const char *);
-} panel_cb_t;
-
-#endif
-
-/** @}
- */
+	return NULL;
+error:
+	return "Test failed";
+}

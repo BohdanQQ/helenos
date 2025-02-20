@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Jiri Svoboda
+ * Copyright (c) 2025 Jiri Svoboda
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -256,15 +256,20 @@ errno_t ata_channel_destroy(ata_channel_t *chan)
 	fibril_mutex_lock(&chan->lock);
 
 	for (i = 0; i < MAX_DEVICES; i++) {
+		if (chan->device[i].present == false)
+			continue;
+
 		rc = ata_device_remove(&chan->device[i]);
 		if (rc != EOK) {
 			ata_msg_error(chan, "Unable to remove device %d.", i);
-			break;
+			fibril_mutex_unlock(&chan->lock);
+			return rc;
 		}
 	}
 
 	ata_bd_fini_irq(chan);
 	fibril_mutex_unlock(&chan->lock);
+	free(chan);
 
 	return rc;
 }
@@ -1531,9 +1536,11 @@ static size_t ata_disk_maxnb(ata_device_t *d)
 	 * If using DMA, this needs to be further restricted not to
 	 * exceed DMA buffer size.
 	 */
-	dma_maxnb = d->chan->params.max_dma_xfer / d->block_size;
-	if (dma_maxnb < maxnb)
-		maxnb = dma_maxnb;
+	if (d->chan->params.use_dma) {
+		dma_maxnb = d->chan->params.max_dma_xfer / d->block_size;
+		if (dma_maxnb < maxnb)
+			maxnb = dma_maxnb;
+	}
 
 	return maxnb;
 }
